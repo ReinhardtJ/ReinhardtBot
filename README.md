@@ -1,6 +1,6 @@
 # ReinhardtBot
 
-A telegram bot with no specific use case
+A telegram bot just for shits and giggles. This readme will one day be useful.
 
 ## Build & Run with Docker
 
