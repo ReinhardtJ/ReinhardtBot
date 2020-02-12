@@ -21,6 +21,6 @@ docker run -it --name bot reinhardtbot:0.1
 (for production)
 
 ```
-docker run --name bot reinhardtbot:0.1
+docker run --name bot --detach reinhardtbot:0.1
 ```
 
