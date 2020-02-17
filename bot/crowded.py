@@ -2,7 +2,7 @@ import datetime
 from bot.gmaps_api import extract_raw_week, extract_current_hour, extract_raw_week_to_week_obj
 from bot.weekdays import WeekInfo, HourInfo, DayInfo
 
-
+# TODO: change the domain term "crowded" to "visited"
 class CrowdedInfo:
     """This class provides functions for accessing how crowded a place is on google maps of a specific location"""
 

@@ -7,25 +7,30 @@ from bot.weekdays import WeekInfo, DayInfo, HourInfo, Weekdays
 
 
 class MapsLocation:
-    def __init__(self, url: str, full_name: str, weekdays_open: list):
+    """
+    A MapsLocation represents meta-data of a google maps location, such as the Name, URL,
+    Adress and other data which does presumably not change over time.
+
+    Data such as Rating or Crowded need to be fetched every time from Google Maps
+    """
+    def __init__(self, url: str, full_name: str):
         self.url = url
         self.full_name = full_name
-        self.weekdays_open = weekdays_open
 
 
 locations = {
     'fitx-adenauer': MapsLocation('https://www.google.de/maps/place/FitX+Fitnessstudio/@51.5495502,7.0786878,' \
                                   '17z/data=!3m1!4b1!4m5!3m4!1s0x47b8e7053e64b21b:0xaf67314083f991e8!8m2!3d51.5495502'
                                   '!4d7.0808765 '
-                                  '?hl=de', 'FitX Gelsenkirchen-Erle', weekdays_open=Weekdays),
+                                  '?hl=de', 'FitX Gelsenkirchen-Erle'),
     'fitx-asbeck': MapsLocation('https://www.google.de/maps/place/FitX+Fitnessstudio/@51.523014,7.0663099,' \
                                 '15.5z/data=!4m5!3m4!1s0x47b8e645c7f82f75:0x4338a1e7f7deee66!8m2!3d51.5237398!4d7'
                                 '.071133?hl=de'
-                                '&authuser=0', 'FitX Gelsenkirchen-Heßler', weekdays_open=Weekdays),
+                                '&authuser=0', 'FitX Gelsenkirchen-Heßler'),
     'sgz-buer': MapsLocation(
         'https://www.google.de/maps/place/Sport-+und+Gesundheitszentrum+Buer/@51.5800968,7.0451868,'
         '14z/data=!4m5!3m4!1s0x0:0xd1508f85ba1da6b5!8m2!3d51.5830 099!4d7.0427299?hl=de',
-        'Sport- & Gesundheitszentrum Buer', weekdays_open=Weekdays),
+        'Sport- & Gesundheitszentrum Buer'),
 
     'sushi-gladbeck': MapsLocation('https://www.google.com/maps/place/Do+Sushi/@51.5733989,6.9889221,'
                                    '15z/data=!4m5!3m4!1s0x0:0xccd9225ca5e829ca!8m2!3d51.5733989!4d6.9889221',
