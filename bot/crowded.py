@@ -1,5 +1,5 @@
 import datetime
-from bot.gmaps_api import get_html, extract_current_hour, extract_week
+from bot.gmaps_api import extract_raw_week, extract_current_hour, extract_raw_week_to_week_obj
 from bot.weekdays import WeekInfo, HourInfo, DayInfo
 
 
@@ -17,8 +17,8 @@ class CrowdedInfo:
     ]
 
     def __init__(self, location):
-        maps_html = get_html(location)
-        self.week: WeekInfo = extract_week(maps_html)
+        maps_html = extract_raw_week(location)
+        self.week: WeekInfo = extract_raw_week_to_week_obj(maps_html)
         self.current_time: HourInfo = extract_current_hour(maps_html)
 
     def get_crowded(self, day: str, hour: int):

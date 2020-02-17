@@ -1,17 +1,19 @@
 import logging
 import traceback
-
 from telegram.ext import Updater, CommandHandler
-
 from bot.bot_token_provider import get_token
 from bot.workout_state_dialog import handle_user_input
 
+# configure logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-
 main_logger = logging.getLogger(__name__)
 main_logger.info("logger initialized. starting bot..")
+
+# configure telegram api
 updater = Updater(token=get_token(), use_context=True)
 dispatcher = updater.dispatcher
+
+DEV_MODE = True
 
 def location(update, context):
     main_logger.info('"locations" called')

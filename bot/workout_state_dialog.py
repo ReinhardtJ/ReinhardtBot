@@ -2,7 +2,7 @@ from bot.crowded import CrowdedInfo
 
 
 def handle_user_input(args):
-    if args[0] == "jetzt":
+    if args[0] == 'jetzt':
         location: str = args[1]
 
         crowded_info: CrowdedInfo = CrowdedInfo(location)
