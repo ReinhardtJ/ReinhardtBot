@@ -13,6 +13,7 @@ class MapsLocation:
 
     Data such as Rating or Crowded need to be fetched every time from Google Maps
     """
+
     def __init__(self, url: str, full_name: str):
         self.url = url
         self.full_name = full_name
@@ -28,13 +29,13 @@ locations = {
                                 '.071133?hl=de'
                                 '&authuser=0', 'FitX Gelsenkirchen-Heßler'),
     'sgz-buer': MapsLocation(
-        'https://www.google.de/maps/place/Sport-+und+Gesundheitszentrum+Buer/@51.5800968,7.0451868,'
-        '14z/data=!4m5!3m4!1s0x0:0xd1508f85ba1da6b5!8m2!3d51.5830 099!4d7.0427299?hl=de',
+        'https://www.google.de/maps/place/Sport-+und+Gesundheitszentrum+Buer/@51.5830114,7.0405425,'
+        '17z/data=!4m5!3m4!1s0x0:0xd1508f85ba1da6b5!8m2!3d51.5830116!4d7.0427312',
         'Sport- & Gesundheitszentrum Buer'),
 
     'sushi-gladbeck': MapsLocation('https://www.google.com/maps/place/Do+Sushi/@51.5733989,6.9889221,'
                                    '15z/data=!4m5!3m4!1s0x0:0xccd9225ca5e829ca!8m2!3d51.5733989!4d6.9889221',
-                                   "Do Sushi Gladbeck", weekdays_open=Weekdays[1:7])
+                                   "Do Sushi Gladbeck")
 }
 
 
@@ -56,7 +57,7 @@ def extract_raw_week(location) -> str:
     return ret
 
 
-def extract_raw_week_to_week_obj(raw_week) -> WeekInfo:
+def extract_raw_week_to_week_obj(raw_week: str) -> WeekInfo:
     """
     Takes a html-extracted representation of a week returns a WeekInfo object built from this data.
     This raw data is received as a nested array form:
@@ -71,38 +72,24 @@ def extract_raw_week_to_week_obj(raw_week) -> WeekInfo:
 
     week = WeekInfo()
 
-    # step 1 - parse string
-
     # regex for onto match a day: [1,[[ ... ]],0] OR [1,null,1]
     tokenized_days: list = re.findall(r'\[\d,\[\[.+?\]\],\d\]|\[\d,null,\d\]', raw_week)
 
-
     for day in tokenized_days:
-        day = day[1:len(day)-1] # removed outer brackets TODO: write function for this operation
+        day: str = day[1:len(day) - 1]  # removed outer brackets TODO: write function for this operation
         day_index = int(re.search(r'\d', day)[0]) - 1  # first entry is the actual weekday as an int
         tokenized_hours: list = re.findall(r'\[\d.+?\]', day)
+        if not tokenized_hours:
+            week.set_day(DayInfo(day_index, is_closed=True))
+        else:
+            for current_hour in tokenized_hours:
+                current_hour: str = current_hour[1:len(current_hour) - 1]
+                tokenized_current_hour: list = re.split(r',', current_hour)
+                time = int(tokenized_current_hour[0])
+                crowded = int(tokenized_current_hour[1])
+                week.get_day(day_index).set_hour(time, HourInfo(time, crowded, is_closed=False))
 
-        for hour in tokenized_hours:
-            hour = day[1:len(day)-1]
-
-    # extract hours
-    hours_extracted = []
-    for hour in hours_deque:
-        # turn unformatted string into usable information
-        hour_extracted = re.findall(r'[\w\s]+', hour)
-
-        # extracted data now in the current form: [time, crowded, ...]
-        time, crowded = [hour_extracted[i] for i in (0, 1)]
-        hours_extracted.append(HourInfo(int(time), crowded))
-
-    # add hours to weekdays and put in weekday object
-    # week = WeekInfo()
-    for day_index in range(7):
-        day = DayInfo(day_index)
-        for hour_index in range(24):
-            day.add_hour(hours_extracted[day_index * 24 + hour_index])
-        week.add_day(day)
-
+    print(week)
     return week
 
 
@@ -120,4 +107,4 @@ def extract_current_hour(maps_html):
     return HourInfo(int(time), crowded)
 
 
-extract_raw_week_to_week_obj(extract_raw_week('sushi-gladbeck'))
+extract_raw_week_to_week_obj(extract_raw_week('sgz-buer'))

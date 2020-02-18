@@ -5,23 +5,26 @@ Weekdays = [
     "Montag",
     "Dienstag",
     "Mittwoch",
-    "Donnrstag",
+    "Donnerstag",
     "Freitag",
     "Samstag",
     "Sonntag"
 ]
 
-
+# TODO change info to model
 class HourInfo:
     """data which can be assigned to one hour"""
 
-    def __init__(self, time: int, crowded: int, is_closed: bool = False):
+    def __init__(self, time: int, crowded: int, is_closed: bool = True):
         self.time = time
         self.crowded = crowded
         self.is_closed = is_closed
 
     def __str__(self):
-        return "[" + str(self.time) + ", " + str(self.crowded) + "]"
+        if self.is_closed:
+            return f'{str(self.time)} Uhr, geschlossen'
+        else:
+            return f'{str(self.time)} Uhr, {str(self.crowded)} voll'
 
 
 class DayInfo:
@@ -29,18 +32,19 @@ class DayInfo:
 
     def __init__(self, day_index: int, is_closed: bool = False):
 
-        if is_closed:
-            self.hours = [HourInfo(i, 0, True) for i in range(24)]
-        else:
-            self.hours = [HourInfo(i, 0, False) for i in range(24)]
-
+        self.hours = [HourInfo(i, 0) for i in range(24)]
+        self.day_index = day_index
         self.name = Weekdays[day_index]
         self.is_closed = is_closed
 
     def __str__(self):
-        ret = self.name + '\n'
-        for hour in self.hours:
-            ret += str(hour) + '\n'
+        ret = f'{self.name}:\n'
+
+        if self.is_closed:
+            ret += 'geschlossen\n'
+        else:
+            for hour in self.hours:
+                ret += str(hour) + '\n'
         return ret
 
     def set_hour(self, hour_index: int, info: HourInfo):
@@ -65,8 +69,8 @@ class WeekInfo:
             ret += str(day) + '\n'
         return ret
 
-    def set_day(self, day_index: int, info: DayInfo):
-        self.days[day_index] = info
+    def set_day(self, info: DayInfo):
+        self.days[info.day_index] = info
 
     def add_day(self, info: DayInfo):
         self.days.append(info)
