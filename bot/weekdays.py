@@ -15,16 +15,16 @@ Weekdays = [
 class HourInfo:
     """data which can be assigned to one hour"""
 
-    def __init__(self, time: int, crowded: int, is_closed: bool = True):
+    def __init__(self, time: int, visited: int, is_closed: bool = True):
         self.time = time
-        self.crowded = crowded
+        self.visited = visited
         self.is_closed = is_closed
 
     def __str__(self):
         if self.is_closed:
             return f'{str(self.time)} Uhr, geschlossen'
         else:
-            return f'{str(self.time)} Uhr, {str(self.crowded)} voll'
+            return f'{str(self.time)} Uhr, {str(self.visited)} voll'
 
 
 class DayInfo:

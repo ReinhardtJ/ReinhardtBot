@@ -11,7 +11,9 @@ class MapsLocation:
     A MapsLocation represents meta-data of a google maps location, such as the Name, URL,
     Adress and other data which does presumably not change over time.
 
-    Data such as Rating or Crowded need to be fetched every time from Google Maps
+    Data such as Rating or 'visited' need to be fetched every time from Google Maps
+
+    TODO: can we find a better solution instead of hard-coding the url?
     """
 
     def __init__(self, url: str, full_name: str):
@@ -86,8 +88,8 @@ def extract_raw_week_to_week_obj(raw_week: str) -> WeekInfo:
                 current_hour: str = current_hour[1:len(current_hour) - 1]
                 tokenized_current_hour: list = re.split(r',', current_hour)
                 time = int(tokenized_current_hour[0])
-                crowded = int(tokenized_current_hour[1])
-                week.get_day(day_index).set_hour(time, HourInfo(time, crowded, is_closed=False))
+                visited = int(tokenized_current_hour[1])
+                week.get_day(day_index).set_hour(time, HourInfo(time, visited, is_closed=False))
 
     print(week)
     return week
@@ -98,13 +100,13 @@ def extract_current_hour(maps_html):
     current_day_token = re.findall(pattern, maps_html)[0]  # get token from html
     extracted_data = re.findall(r'[\w\s]+', current_day_token)  # extract usable data
 
-    # extracted data now in the current form: [info text, time, crowded] OR [time, crowded]
+    # extracted data now in the current form: [info text, time, visited] OR [time, visited]
     if len(extracted_data) == 2:
-        time, crowded = [extracted_data[i] for i in (0, 1)]
+        time, visited = [extracted_data[i] for i in (0, 1)]
     else:
-        time, crowded = [extracted_data[i] for i in (1, 2)]
+        time, visited = [extracted_data[i] for i in (1, 2)]
 
-    return HourInfo(int(time), crowded)
+    return HourInfo(int(time), visited)
 
 
 extract_raw_week_to_week_obj(extract_raw_week('sgz-buer'))

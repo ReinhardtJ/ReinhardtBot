@@ -1,18 +1,18 @@
-from bot.crowded import CrowdedInfo
+from bot.visited import VisitedModel
 
 
 def handle_user_input(args):
     if args[0] == 'jetzt':
         location: str = args[1]
 
-        crowded_info: CrowdedInfo = CrowdedInfo(location)
-        response: str = crowded_info.get_current_crowded()
+        visited_model: VisitedModel = VisitedModel(location)
+        response: str = visited_model.get_current_visited()
     else:
         weekday: str = args[0]
         time = int(args[1])
         location: str = args[2]
 
-        crowded_info = CrowdedInfo(location)
-        response = crowded_info.get_crowded(weekday, time)
+        visited_model = VisitedModel(location)
+        response = visited_model.get_visited(weekday, time)
 
     return response
