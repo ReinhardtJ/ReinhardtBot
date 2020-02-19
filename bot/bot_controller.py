@@ -18,8 +18,8 @@ DEV_MODE = True
 def location(update, context):
     main_logger.info('"locations" called')
 
-    from bot.gmaps_api import locations
-    all_locations = str(list(locations.keys()))
+    from bot.gmaps_api import location_urls
+    all_locations = str(list(location_urls.keys()))
     context.bot.send_message(chat_id=update.effective_chat.id, text=all_locations)
 
 

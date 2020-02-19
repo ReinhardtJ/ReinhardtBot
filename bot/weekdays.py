@@ -1,6 +1,3 @@
-import re
-from enum import Enum
-
 Weekdays = [
     "Montag",
     "Dienstag",
@@ -11,10 +8,8 @@ Weekdays = [
     "Sonntag"
 ]
 
-# TODO change info to model
-class HourInfo:
-    """data which can be assigned to one hour"""
 
+class HourModel:
     def __init__(self, time: int, visited: int, is_closed: bool = True):
         self.time = time
         self.visited = visited
@@ -27,12 +22,9 @@ class HourInfo:
             return f'{str(self.time)} Uhr, {str(self.visited)} voll'
 
 
-class DayInfo:
-    """Encapsulates a list of HourInformation objects to represent a whole day"""
-
+class DayModel:
     def __init__(self, day_index: int, is_closed: bool = False):
-
-        self.hours = [HourInfo(i, 0) for i in range(24)]
+        self.hours = [HourModel(i, 0) for i in range(24)]  # init hours with default values
         self.day_index = day_index
         self.name = Weekdays[day_index]
         self.is_closed = is_closed
@@ -47,21 +39,21 @@ class DayInfo:
                 ret += str(hour) + '\n'
         return ret
 
-    def set_hour(self, hour_index: int, info: HourInfo):
+    def set_hour(self, hour_index: int, info: HourModel):
         self.hours[hour_index] = info
 
-    def add_hour(self, info: HourInfo):
+    def add_hour(self, info: HourModel):
         self.hours.append(info)
 
     def get_hour(self, hour: int):
         return self.hours[hour]
 
 
-class WeekInfo:
+class WeekModel:
     """Encapsulates a list of DayInformation objects to represent a whole Week"""
 
     def __init__(self):
-        self.days = [DayInfo(i) for i in range(7)]
+        self.days = [DayModel(i) for i in range(7)]
 
     def __str__(self):
         ret = ''
@@ -69,10 +61,10 @@ class WeekInfo:
             ret += str(day) + '\n'
         return ret
 
-    def set_day(self, info: DayInfo):
+    def set_day(self, info: DayModel):
         self.days[info.day_index] = info
 
-    def add_day(self, info: DayInfo):
+    def add_day(self, info: DayModel):
         self.days.append(info)
 
     def get_day(self, weekday_index: int):
