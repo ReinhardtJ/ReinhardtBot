@@ -1,13 +1,3 @@
-Weekdays = [
-    "Montag",
-    "Dienstag",
-    "Mittwoch",
-    "Donnerstag",
-    "Freitag",
-    "Samstag",
-    "Sonntag"
-]
-
 
 class HourModel:
     def __init__(self, time: int, visited: int, is_closed: bool = True):
@@ -26,7 +16,7 @@ class DayModel:
     def __init__(self, day_index: int, is_closed: bool = False):
         self.hours = [HourModel(i, 0) for i in range(24)]  # init hours with default values
         self.day_index = day_index
-        self.name = Weekdays[day_index]
+        self.name = WeekModel.weekday_names[day_index]
         self.is_closed = is_closed
 
     def __str__(self):
@@ -51,6 +41,16 @@ class DayModel:
 
 class WeekModel:
     """Encapsulates a list of DayInformation objects to represent a whole Week"""
+
+    weekday_names = [
+        "Montag",
+        "Dienstag",
+        "Mittwoch",
+        "Donnerstag",
+        "Freitag",
+        "Samstag",
+        "Sonntag"
+    ]
 
     def __init__(self):
         self.days = [DayModel(i) for i in range(7)]

@@ -1,8 +1,8 @@
 import logging
 import traceback
-from telegram.ext import Updater, CommandHandler
+import telegram.ext as tg
 from bot.bot_token_provider import get_token
-from bot.workout_state_dialog import handle_user_input
+from bot.visited_dialog import handle_user_input
 
 # configure logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -10,7 +10,7 @@ main_logger = logging.getLogger(__name__)
 main_logger.info("logger initialized. starting bot..")
 
 # configure telegram api
-updater = Updater(token=get_token(), use_context=True)
+updater = tg.Updater(token=get_token(), use_context=True)
 dispatcher = updater.dispatcher
 
 DEV_MODE = True
@@ -18,12 +18,12 @@ DEV_MODE = True
 def location(update, context):
     main_logger.info('"locations" called')
 
-    from bot.gmaps_api import location_urls
+    from bot.gmaps_location import location_urls
     all_locations = str(list(location_urls.keys()))
     context.bot.send_message(chat_id=update.effective_chat.id, text=all_locations)
 
 
-def workout_state(update, context):
+def visited(update, context):
     # command template: wievoll [jetzt/Wochentag Uhrzeit] [Standort]
     main_logger.info('"wievoll" called - trying to handle args: ' + str(context.args))
     try:
@@ -38,8 +38,8 @@ def workout_state(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 
-workout_state_handler = CommandHandler('wievoll', workout_state)
-location_handler = CommandHandler('locations', location)
-dispatcher.add_handler(workout_state_handler)
+visited_handler = tg.CommandHandler('wievoll', visited)
+location_handler = tg.CommandHandler('locations', location)
+dispatcher.add_handler(visited_handler)
 dispatcher.add_handler(location_handler)
 updater.start_polling()
