@@ -1,7 +1,8 @@
 import datetime
 import logging
 import re
-import requests
+
+from bot.gmaps import gmaps_data_mining as mining
 from bot import weekdays
 
 
@@ -27,8 +28,10 @@ class GmapsLocation:
     def __init__(self, location):
         self.logger = logging.getLogger(__name__)
 
-        html = self.get_html_from_location(location)
-        raw_week: str = self.raw_week_from_html(html)
+        # get and run data extractor
+        dextractor = mining.DataExtractor()
+        html = dextractor.html_from_location(location)
+        raw_week: str = dextractor.raw_week_from_html(html)
 
         self.weekday: int = datetime.datetime.today().weekday()
         self.time_index = int(datetime.datetime.now().strftime("%H"))
@@ -37,7 +40,7 @@ class GmapsLocation:
         self.week = self.raw_week_to_weekmodel(raw_week)
         self.current_time = self.html_to_current_hourmodel(html)
 
-    def get_visited(self, day: str, hour: int):
+    def get_visited(self, day: str, hour: int) -> str:
         day_index: int = weekdays.WeekModel.weekday_names.index(day)
         day_info = self.week.get_day(day_index)
         hour_info = day_info.get_hour(hour)
@@ -54,33 +57,6 @@ class GmapsLocation:
         response = f'Jetzt gerade ist es zu {hour_info.visited}% voll. ' \
                    f'Normalerweise ist es am {day_info.name} zu dieser Zeit zu {statistic_hour_info.visited}% voll.'
         return response
-
-    def get_html_from_location(self, location: str) -> str:
-        """
-        :param location:
-        :return:
-        """
-        # get raw html from google maps
-        url: str = GmapsLocation.location_urls[location]
-        html: str = requests.get(url, {}).text
-
-        # pre-format a string containing only the necessary information
-        html = re.sub(r'\\n|\\\"', '', html)
-        # write html to text file for testing purposes
-        # with open('maps_data.txt', 'r+', encoding='utf-8') as file:
-        #     file.seek(0)
-        #     file.write(html)
-        #     file.truncate()
-        return html
-
-    def raw_week_from_html(self, html: str) -> str:
-        match_week_regex = r'\[\[\[\d,\[\[\d,\d,.+?\]\],\d\]\]'
-        week = re.findall(match_week_regex, html)[0]
-        # with open('maps_data.txt', 'r+', encoding='utf-8') as file:
-        #     file.seek(0)
-        #     file.write(week)
-        #     file.truncate()
-        return week
 
     def raw_week_to_weekmodel(self, raw_week: str) -> weekdays.WeekModel:
         """Takes a html-extracted representation of a week and returns a WeekModel object built from this data.
@@ -104,8 +80,7 @@ class GmapsLocation:
         tokenized_days: list = re.findall(match_day_regex, raw_week)
 
         for raw_day in tokenized_days:
-            raw_day: str = raw_day[
-                           1:len(raw_day) - 1]  # removed outer brackets TODO: write function for this operation
+            raw_day: str = self.clip_string(raw_day)
             day_index = int(re.search(r'\d', raw_day)[0]) - 1  # first entry is the actual weekday as an int
             match_hour_regex = r'\[\d.+?\]'
             tokenized_hours: list = re.findall(match_hour_regex, raw_day)
@@ -113,7 +88,7 @@ class GmapsLocation:
                 week.set_day(weekdays.DayModel(day_index, is_closed=True))
             else:
                 for current_hour in tokenized_hours:
-                    current_hour: str = current_hour[1:len(current_hour) - 1]
+                    current_hour: str = self.clip_string(current_hour)
                     tokenized_current_hour: list = re.split(r',', current_hour)
                     time = int(tokenized_current_hour[0])
                     visited = int(tokenized_current_hour[1])
@@ -134,5 +109,9 @@ class GmapsLocation:
         time, visited = [extracted_data[i] for i in (0, 1)]
 
         return weekdays.HourModel(int(time), visited)
+
+    def clip_string(self, string: str) -> str:
+        """Removes the first and last character in a string."""
+        return string[1:len(string) - 1]
 
 # location = GmapsLocation('fitx-adenauer')

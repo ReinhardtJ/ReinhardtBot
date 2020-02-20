@@ -1,8 +1,8 @@
 import logging
 import traceback
 import telegram.ext as tg
-from bot.bot_token_provider import get_token
-from bot.visited_dialog import handle_user_input
+from bot.bot_token_provider import BotTokenProvider
+from bot.visited_dialog import DialogHandler
 
 # configure logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -10,24 +10,24 @@ main_logger = logging.getLogger(__name__)
 main_logger.info("logger initialized. starting bot..")
 
 # configure telegram api
-updater = tg.Updater(token=get_token(), use_context=True)
+updater = tg.Updater(token=BotTokenProvider.token, use_context=True)
 dispatcher = updater.dispatcher
 
-DEV_MODE = True
 
 def location(update, context):
     main_logger.info('"locations" called')
 
-    from bot.gmaps_location import location_urls
-    all_locations = str(list(location_urls.keys()))
+    from bot.gmaps.gmaps_location import GmapsLocation
+    all_locations = str(list(GmapsLocation.location_urls.keys()))
     context.bot.send_message(chat_id=update.effective_chat.id, text=all_locations)
 
 
 def visited(update, context):
     # command template: wievoll [jetzt/Wochentag Uhrzeit] [Standort]
-    main_logger.info('"wievoll" called - trying to handle args: ' + str(context.args))
+    args = context.args
+    main_logger.info('"wievoll" called - trying to handle args: ' + str(args))
     try:
-        response = handle_user_input(context.args)
+        response = DialogHandler.handle_user_input(args)
         main_logger.info('successfuly retrieved workout state, sending response...')
     except:
         # with open('logfile.log', 'a+', encoding='utf-8') as file:

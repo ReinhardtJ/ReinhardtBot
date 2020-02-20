@@ -136,4 +136,4 @@ bot/bot_token_provider.py
 
 # Testing files
 bot/testing.py
-bot/maps_data.txt
+bot/gmaps/maps_data.txt

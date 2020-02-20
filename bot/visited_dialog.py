@@ -1,18 +1,26 @@
-from bot import gmaps_location
+from bot.gmaps import gmaps_location
 
 
-def handle_user_input(args):
-    if args[0] == 'jetzt':
-        location: str = args[1]
+class DialogHandler:
+    def __init__(self):
+        self.locations_urls = gmaps_location.GmapsLocation.location_urls
 
-        maps_location = gmaps_location.GmapsLocation(location)
-        response: str = maps_location.get_current_visited()
-    else:
-        weekday: str = args[0]
-        time = int(args[1])
-        location: str = args[2]
+    def handle_user_input(self, args):
+        if args[0] == 'jetzt':
+            location: str = args[1]
 
-        maps_location = gmaps_location.GmapsLocation(location)
-        response = maps_location.get_visited(weekday, time)
+            if location not in self.locations_urls.keys:
+                response = 'Sorry den Ort kenne ich nicht. Vielleicht kannst du ' \
+                           'bald über mich selbst Orte hinzufügen!'
+            else:
+                maps_location = gmaps_location.GmapsLocation(location)
+                response: str = maps_location.get_current_visited()
+        else:
+            weekday: str = args[0]
+            time = int(args[1])
+            location: str = args[2]
 
-    return response
+            maps_location = gmaps_location.GmapsLocation(location)
+            response = maps_location.get_visited(weekday, time)
+
+        return response
