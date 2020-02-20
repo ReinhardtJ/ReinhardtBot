@@ -25,9 +25,10 @@ def location(update, context):
 def visited(update, context):
     # command template: wievoll [jetzt/Wochentag Uhrzeit] [Standort]
     args = context.args
+    handler = DialogHandler()
     main_logger.info('"wievoll" called - trying to handle args: ' + str(args))
     try:
-        response = DialogHandler.handle_user_input(args)
+        response = handler.handle_user_input(args)
         main_logger.info('successfuly retrieved workout state, sending response...')
     except:
         # with open('logfile.log', 'a+', encoding='utf-8') as file:

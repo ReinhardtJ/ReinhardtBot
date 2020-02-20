@@ -9,7 +9,7 @@ class DialogHandler:
         if args[0] == 'jetzt':
             location: str = args[1]
 
-            if location not in self.locations_urls.keys:
+            if location not in list(self.locations_urls.keys()):
                 response = 'Sorry den Ort kenne ich nicht. Vielleicht kannst du ' \
                            'bald über mich selbst Orte hinzufügen!'
             else:

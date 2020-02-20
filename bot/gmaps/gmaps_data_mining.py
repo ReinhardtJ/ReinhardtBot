@@ -22,7 +22,7 @@ class DataExtractor:
         match_week_regex = r'\[\[\[\d,\[\[\d,\d,.+?\]\],\d\]\]'
         week = re.findall(match_week_regex, html)[0]
 
-        if self.write_data_to_file:
+        if self.should_write_data_to_file:
             self.write_data_to_file(week)
 
         return week
@@ -47,7 +47,7 @@ class DataExtractor:
 
         return html
 
-    def write_data_to_file(self, data: str) -> None:
+    def write_data_to_file(self, data: str) -> None: # TODO fix bug preventing file to be opened
         with open('maps_data.txt', 'r+', encoding='utf-8') as file:
             file.seek(0)
             file.write(data)
