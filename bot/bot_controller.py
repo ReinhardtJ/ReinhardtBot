@@ -1,8 +1,7 @@
 import logging
-import traceback
 import telegram.ext as tg
 from bot.bot_token_provider import BotTokenProvider
-from bot.visited_dialog import DialogHandler
+from bot import visited_dialog
 
 # configure logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -22,25 +21,32 @@ def location(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text=all_locations)
 
 
-def visited(update, context):
-    # command template: wievoll [jetzt/Wochentag Uhrzeit] [Standort]
+def howfull(update, context):
+    # command template: wievoll [weekday time location]
     args = context.args
-    handler = DialogHandler()
     logger.info(f'"wievoll" called - trying to handle args: {args}')
-    try:
-        response = handler.handle_user_input(args)
-        logger.info('successfuly retrieved workout state, sending response...')
-    except:
-        # with open('logfile.log', 'a+', encoding='utf-8') as file:
-        #     traceback.print_exc(file=file)
-        logger.error(traceback.format_exc())
-        response = "Versteh ich nicht"
 
+    handler = visited_dialog.DialogHandler()
+
+    response = handler.handle_howfull(args)
+    logger.info('sending response...')
+    context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+
+def howfull_now(update, context):
+    # command template: wievoll jetzt [location]
+    args = context.args
+    logger.info(f'"wievoll jetzt" called - trying to handle args: {args}')
+
+    handler = visited_dialog.DialogHandler()
+    response = handler.handle_howfull_now(args)
+    logger.info('sending response...')
     context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
 
-visited_handler = tg.CommandHandler('wievoll', visited)
 location_handler = tg.CommandHandler('locations', location)
-dispatcher.add_handler(visited_handler)
+howfull_handler = tg.CommandHandler('wievoll', howfull)
+howfull_now_handler = tg.CommandHandler('wievolljetzt', howfull_now)
 dispatcher.add_handler(location_handler)
+dispatcher.add_handler(howfull_handler)
+dispatcher.add_handler(howfull_now_handler)
 updater.start_polling()

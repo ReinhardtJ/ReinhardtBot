@@ -2,8 +2,7 @@ import datetime
 import logging
 import re
 
-from bot.gmaps import gmaps_data_mining as mining
-from bot import weekdays
+from bot.gmaps import gmaps_data_mining as mining, weekdays
 
 
 class GmapsLocation:
