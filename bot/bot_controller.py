@@ -6,8 +6,8 @@ from bot.visited_dialog import DialogHandler
 
 # configure logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-main_logger = logging.getLogger(__name__)
-main_logger.info("logger initialized. starting bot..")
+logger = logging.getLogger(__name__)
+logger.info("logger initialized. starting bot..")
 
 # configure telegram api
 updater = tg.Updater(token=BotTokenProvider.token, use_context=True)
@@ -15,7 +15,7 @@ dispatcher = updater.dispatcher
 
 
 def location(update, context):
-    main_logger.info('"locations" called')
+    logger.info('"locations" called')
 
     from bot.gmaps.gmaps_location import GmapsLocation
     all_locations = str(list(GmapsLocation.location_urls.keys()))
@@ -26,14 +26,14 @@ def visited(update, context):
     # command template: wievoll [jetzt/Wochentag Uhrzeit] [Standort]
     args = context.args
     handler = DialogHandler()
-    main_logger.info('"wievoll" called - trying to handle args: ' + str(args))
+    logger.info(f'"wievoll" called - trying to handle args: {args}')
     try:
         response = handler.handle_user_input(args)
-        main_logger.info('successfuly retrieved workout state, sending response...')
+        logger.info('successfuly retrieved workout state, sending response...')
     except:
         # with open('logfile.log', 'a+', encoding='utf-8') as file:
         #     traceback.print_exc(file=file)
-        main_logger.error(traceback.format_exc())
+        logger.error(traceback.format_exc())
         response = "Versteh ich nicht"
 
     context.bot.send_message(chat_id=update.effective_chat.id, text=response)
