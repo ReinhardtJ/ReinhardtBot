@@ -2,7 +2,8 @@ import datetime
 import logging
 import re
 
-from bot.gmaps import gmaps_data_mining as mining, weekdays
+from bot.gmaps import gmaps_data_mining as mining
+from bot.gmaps import weekdays
 
 
 class GmapsLocation:
@@ -15,21 +16,20 @@ class GmapsLocation:
     """
 
     location_urls = {
-        'fitx-adenauer': 'https://www.google.de/maps/place/FitX+Fitnessstudio/'
-                         '@51.5495502,7.0786878,17z/data=!3m1!4b1!4m5!3m4!1s0x4'
-                         '7b8e7053e64b21b:0xaf67314083f991e8!8m2!3d51.5495502!4'
-                         'd7.0808765?hl=de',
+        'ge-fitx-erle': 'https://www.google.de/maps/place/FitX+Fitnessstudio/@51.5495502,7.0786878,17z/data=!3m1!4b1!4m5!3m4!1s0x47b8e7053e64b21b:0xaf67314083f991e8!8m2!3d51.5495502!4d7.0808765?hl=de',
 
-        'fitx-asbeck': 'https://www.google.de/maps/place/FitX+Fitnessstudio/'
-                       '@51.523014,7.0663099,15.5z/data=!4m5!3m4!1s0x47b8e645c'
-                       '7f82f75:0x4338a1e7f7deee66!8m2!3d51.5237398!4d7.071133?'
-                       'hl=de&authuser=0',
+        'ge-fitx-heßler': 'https://www.google.de/maps/place/FitX+Fitnessstudio/@51.523014,7.0663099,15.5z/data=!4m5!3m4!1s0x47b8e645c7f82f75:0x4338a1e7f7deee66!8m2!3d51.5237398!4d7.071133?hl=de&authuser=0',
 
-        'sgz-buer': 'https://www.google.de/maps/place/Sport-+und+Gesundheitszen'
-                    'trum+Buer/@51.5830114,7.0405425,17z/data=!4m5!3m4!1s0x0:0x'
-                    'd1508f85ba1da6b5!8m2!3d51.5830116!4d7.0427312'
+        'buer-sgz': 'https://www.google.de/maps/place/Sport-+und+Gesundheitszentrum+Buer/@51.5830114,7.0405425,17z/data=!4m5!3m4!1s0x0:0xd1508f85ba1da6b5!8m2!3d51.5830116!4d7.0427312',
+        
+        'pb-innenstadt': 'https://www.google.com/maps/place/Neptunbrunnen/@51.7182793,8.7548976,226m/data=!3m1!1e3!4m5!3m4!1s0x47ba4c966c50ea83:0x1ea56e5da0f2f191!8m2!3d51.7181414!4d8.7552519',
 
+        'pb-fitnessloft': 'https://www.google.com/maps/place/FitnessLOFT+Paderborn/@51.717339,8.7484284,538m/data=!3m2!1e3!4b1!4m5!3m4!1s0x47ba4c97db86e3b5:0x4f2a06c7421cd342!8m2!3d51.717339!4d8.7506171',
+
+        'pb-fit4u': 'https://www.google.com/maps/place/F4U+Paderborn/@51.7341796,8.77477,538m/data=!3m1!1e3!4m5!3m4!1s0x0:0x79e8386e8d99c69c!8m2!3d51.7341798!4d8.7769584'
     }
+
+    location_names_as_list = list(location_urls.keys())
 
     def __init__(self, location):
         self.logger = logging.getLogger(__name__)

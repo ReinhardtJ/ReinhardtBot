@@ -1,0 +1,4 @@
+locations - Alle Orte ich ich kenne
+wievoll - <Wochentag> <Uhrzeit> <location>
+wievolljetzt - <location>
+setlocation - <location>

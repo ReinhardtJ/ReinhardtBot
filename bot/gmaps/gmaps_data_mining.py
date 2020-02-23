@@ -8,7 +8,7 @@ class DataExtractor:
     """Performs a request to a google maps location via its URL and extracts
     various data as raw string."""
 
-    def __init__(self, should_write_data_to_file: bool = False):
+    def __init__(self, should_write_data_to_file: bool = True):
         self.logger = logging.getLogger(__name__)
         self.should_write_data_to_file = should_write_data_to_file
 
@@ -47,8 +47,8 @@ class DataExtractor:
 
         return html
 
-    def write_data_to_file(self, data: str) -> None: # TODO fix bug preventing file to be opened
-        with open('maps_data.txt', 'r+', encoding='utf-8') as file:
+    def write_data_to_file(self, data: str) -> None:
+        with open('gmaps/maps_data.txt', 'r+', encoding='utf-8') as file:
             file.seek(0)
             file.write(data)
             file.truncate()
