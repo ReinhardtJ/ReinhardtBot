@@ -12,6 +12,7 @@ class DialogHandler:
         self.locations_urls = gmaps_location.GmapsLocation.location_urls
 
     def handle_howfull_now(self, args, user_id: str) -> str:
+        """Called when a user entered the """
         try:
             if len(args) == 0:
                 self.logger.info('no arguments for howfullnow, attempt to read from file')
@@ -31,7 +32,7 @@ class DialogHandler:
             return response
         except:
             tb = traceback.format_exc()
-            with open('logfile.log', 'a+', encoding='utf-8') as file:
+            with open('../logfile.log', 'a+', encoding='utf-8') as file:
                 file.write(tb)
             self.logger.error(tb)
             return 'Es ist ein richtig heftiger Fehler aufgetreten :('
@@ -83,7 +84,7 @@ class DialogHandler:
                 response = maps_location.get_visited(weekday_index, time)
         except:
             tb = traceback.format_exc()
-            with open('logfile.log', 'a+', encoding='utf-8') as file:
+            with open('../logfile.log', 'a+', encoding='utf-8') as file:
                 file.write(tb)
             self.logger.error(tb)
             response = 'Es ist ein richtig heftiger Fehler aufgetreten :('
