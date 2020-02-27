@@ -137,4 +137,4 @@ bot/bot_token_provider.py
 # Testing files
 bot/testing.py
 bot/gmaps/maps_data.txt
-/bot/gmaps/user_location_mapping.json
+/persistent_data/*

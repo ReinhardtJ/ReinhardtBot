@@ -4,7 +4,7 @@ import bot.gmaps.gmaps_location as gmaps_location
 import logging
 
 class UserLocationMapper:
-    rel_file_path = "user_location_mapping.json"
+    rel_file_path = "../../persistent_data/user_location_mapping.json"
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
