@@ -1,8 +1,9 @@
 import logging
+import os
 import telegram as tg
 import telegram.ext as tg_ext
-from bot.bot_token_provider import BotTokenProvider
 from bot.dialogs import visited_dialog
+
 
 class BotController:
     def __init__(self):
@@ -12,8 +13,14 @@ class BotController:
         self.logger = logging.getLogger(__name__)
         self.logger.info("logger initialized. starting bot..")
 
+        try:
+            bot_token = os.environ['BOT_TOKEN']
+        except:
+            self.logger.error('Bot token environment variable not set, exiting...')
+            exit()
+
         # configure telegram api
-        tg_updater = tg_ext.Updater(token=BotTokenProvider.token, use_context=True)
+        tg_updater = tg_ext.Updater(token=bot_token, use_context=True)
         dispatcher = tg_updater.dispatcher
 
         # configure command handlers
@@ -34,7 +41,6 @@ class BotController:
         all_locations = str(GmapsLocation.location_names_as_list)
         context.bot.send_message(chat_id=update.effective_chat.id, text=all_locations)
 
-
     def set_location(self, update: tg.Update, context: tg_ext.CallbackContext):
         args = context.args
         self.logger.info(f'"setlocation" called - trying to handle args: {args}')
@@ -46,7 +52,6 @@ class BotController:
         response = mapper.set_user(user_id, args)
         context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
-
     def howfull(self, update: tg.Update, context: tg_ext.CallbackContext):
         # command template: wievoll [weekday time location]
         args = context.args
@@ -57,7 +62,6 @@ class BotController:
         response = handler.handle_howfull(args)
         self.logger.info('sending response...')
         context.bot.send_message(chat_id=update.effective_chat.id, text=response)
-
 
     def howfull_now(self, update: tg.Update, context: tg_ext.CallbackContext):
         args = context.args

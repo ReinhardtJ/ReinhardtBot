@@ -131,9 +131,6 @@ dmypy.json
 # PyCharm
 .idea/
 
-# Bot token
-bot/bot_token_provider.py
-
 # Testing files
 bot/testing.py
 bot/gmaps/maps_data.txt
