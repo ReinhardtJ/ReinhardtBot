@@ -8,7 +8,7 @@ class DataExtractor:
     """Performs a request to a google maps location via its URL and extracts
     various data as raw string."""
 
-    def __init__(self, should_write_data_to_file: bool = True):
+    def __init__(self, should_write_data_to_file: bool = False):
         self.logger = logging.getLogger(__name__)
         self.should_write_data_to_file = should_write_data_to_file
 
