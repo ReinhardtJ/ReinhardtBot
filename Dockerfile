@@ -8,4 +8,4 @@ ENV PYTHONPATH /usr/src/ReinhardtBot
 RUN mkdir persistent_data
 VOLUME /usr/src/ReinhardtBot/persistent_data
 WORKDIR bot
-CMD python3 bot_controller.py
+CMD python3 main.py
