@@ -43,7 +43,7 @@ class DialogHandler:
                        'bald über mich selbst Orte hinzufügen! Probier mal /locations'
         else:
             maps_location = gmaps_location.GmapsLocation(location)
-            response = maps_location.get_current_visited()
+            response = maps_location.get_current_visited_as_message()
 
         return response
 
@@ -81,7 +81,7 @@ class DialogHandler:
             else:
                 maps_location = gmaps_location.GmapsLocation(location)
                 weekday_index = weekdays.WeekModel.weekday_names.index(weekday)
-                response = maps_location.get_visited(weekday_index, time)
+                response = maps_location.get_visited_as_message(weekday_index, time)
         except:
             tb = traceback.format_exc()
             with open('../logfile.log', 'a+', encoding='utf-8') as file:

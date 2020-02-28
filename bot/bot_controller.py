@@ -19,20 +19,7 @@ class BotController:
             self.logger.error('Bot token environment variable not set, exiting...')
             exit()
 
-        # configure telegram api
-        tg_updater = tg_ext.Updater(token=bot_token, use_context=True)
-        dispatcher = tg_updater.dispatcher
-
-        # configure command handlers
-        location_handler = tg_ext.CommandHandler('locations', self.location)
-        setlocation_handler = tg.ext.CommandHandler('setlocation', self.set_location)
-        howfull_handler = tg_ext.CommandHandler('wievoll', self.howfull)
-        howfull_now_handler = tg_ext.CommandHandler('wievolljetzt', self.howfull_now)
-        dispatcher.add_handler(location_handler)
-        dispatcher.add_handler(setlocation_handler)
-        dispatcher.add_handler(howfull_handler)
-        dispatcher.add_handler(howfull_now_handler)
-        tg_updater.start_polling()
+        self.configure_command_handlers(bot_token)
 
     def location(self, update: tg.Update, context: tg_ext.CallbackContext):
         self.logger.info('"locations" called')
@@ -72,3 +59,17 @@ class BotController:
         response = handler.handle_howfull_now(args, user_id)
         self.logger.info('sending response...')
         context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+
+    def configure_command_handlers(self, bot_token: str):
+        tg_updater = tg_ext.Updater(token=bot_token, use_context=True)
+        dispatcher = tg_updater.dispatcher
+
+        location_handler = tg_ext.CommandHandler('locations', self.location)
+        setlocation_handler = tg.ext.CommandHandler('setlocation', self.set_location)
+        howfull_handler = tg_ext.CommandHandler('wievoll', self.howfull)
+        howfull_now_handler = tg_ext.CommandHandler('wievolljetzt', self.howfull_now)
+        dispatcher.add_handler(location_handler)
+        dispatcher.add_handler(setlocation_handler)
+        dispatcher.add_handler(howfull_handler)
+        dispatcher.add_handler(howfull_now_handler)
+        tg_updater.start_polling()

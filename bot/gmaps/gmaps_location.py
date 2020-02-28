@@ -40,15 +40,15 @@ class GmapsLocation:
         raw_week: str = dextractor.raw_week_from_html(html)
 
         self.weekday: int = datetime.datetime.today().weekday()
-        self.time_index = int(datetime.datetime.now().strftime("%H"))
+        self.time_index = int(datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=1))).strftime("%H"))
         self.weekday_name: str = weekdays.WeekModel.weekday_names[self.weekday]
 
         self.week = self.raw_week_to_weekmodel(raw_week)
         self.current_time = self.html_to_current_hourmodel(html)
 
-    def get_visited(self, day_index: int, hour: int) -> str:
+    def get_visited_as_message(self, day_index: int, hour: int) -> str:
         """
-        Generates a readable message of how visited this location.
+        Generates a readable message of how visited this location is.
         :param day_index: Which day we are looking for (0 = Monday, 1 = Tuesday,
         etc.)
         :param hour: Which hour are we looking for
@@ -61,7 +61,7 @@ class GmapsLocation:
                         f'{hour_info.visited}% voll. '
         return response
 
-    def get_current_visited(self):
+    def get_current_visited_as_message(self):
         day_info = self.week.get_day(self.weekday)
 
         # get historical time info for the current situation for comparison
@@ -106,16 +106,16 @@ class GmapsLocation:
             match_hour_regex = r'\[\d.+?\]'
             tokenized_hours: list = re.findall(match_hour_regex, raw_day)
 
-            # if we can't find any hour tokens for this day, assume this das is closed
             if not tokenized_hours:
+                # if we can't find any hour tokens for this day, assume location is closed
                 week.set_day(weekdays.DayModel(day_index, is_closed=True))
             else:
-                for current_hour in tokenized_hours:
+                for raw_hour in tokenized_hours:
 
-                    current_hour: str = self.clip_string(current_hour)
-                    tokenized_current_hour: list = re.split(r',', current_hour)
-                    time = int(tokenized_current_hour[0])
-                    visited = int(tokenized_current_hour[1])
+                    raw_hour: str = self.clip_string(raw_hour)
+                    tokenized_hour_details: list = re.split(r',', raw_hour)
+                    time = int(tokenized_hour_details[0])
+                    visited = int(tokenized_hour_details[1])
                     hour_model = weekdays.HourModel(time, visited, is_closed=False)
 
                     current_day = week.get_day(day_index)
