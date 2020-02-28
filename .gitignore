@@ -137,4 +137,6 @@ bot/bot_token_provider.py
 # Testing files
 bot/testing.py
 bot/gmaps/maps_data.txt
-/persistent_data/*
+
+# Persistent files, those will be added during runtime when the bot starts for the first time
+/persistent_data
