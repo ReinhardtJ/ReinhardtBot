@@ -1,4 +1,5 @@
-locations - Alle Orte ich ich kenne
-wievoll - <Wochentag> <Uhrzeit> <location>
-wievolljetzt - <location>
-setlocation - <location>
+help - Hilfe anzeigen
+locations - Alle Orte
+wievoll - Wie voll ist es zu einer bestimmten Zeit?
+wievolljetzt - Wie voll ist es jetzt gerade?
+setlocation - Setzt deinen persönlichen Standort
