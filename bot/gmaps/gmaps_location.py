@@ -44,7 +44,10 @@ class GmapsLocation:
         self.weekday_name: str = weekdays.WeekModel.weekday_names[self.weekday]
 
         self.week = self.raw_week_to_weekmodel(raw_week)
-        self.current_time = self.html_to_current_hourmodel(html)
+        try:
+            self.current_time = self.html_to_current_hourmodel(html)
+        except:
+            self.current_time = None
 
     def get_visited_as_message(self, day_index: int, hour: int) -> str:
         """
@@ -65,11 +68,15 @@ class GmapsLocation:
         day_info = self.week.get_day(self.weekday)
 
         # get historical time info for the current situation for comparison
-        statistic_hour_info = day_info.get_hour(self.current_time.time)
-        hour_info = self.current_time
-        response = f'Jetzt gerade ist es zu {hour_info.visited}% voll. ' \
-                   f'Normalerweise ist es am {day_info.name} zu dieser Zeit ' \
-                   f'zu {statistic_hour_info.visited}% voll.'
+        statistic_hour_info = day_info.get_hour(self.time_index)
+        if self.current_time is None:
+            response = f'Live-Daten sind für diesen Standort gerade nicht verfügbar. ' \
+                       f'Normalerweise ist es am {day_info.name} zu dieser Zeit ' \
+                       f'zu {statistic_hour_info.visited}% voll.'
+        else:
+            response = f'Jetzt gerade ist es zu {self.current_time.visited}% voll. ' \
+                       f'Normalerweise ist es am {day_info.name} zu dieser Zeit ' \
+                       f'zu {statistic_hour_info.visited}% voll.'
         return response
 
     def raw_week_to_weekmodel(self, raw_week: str) -> weekdays.WeekModel:
@@ -130,11 +137,12 @@ class GmapsLocation:
 
         :param html: a raw html document
         :return: a HourModel
+        :raises: an Exception if live data is not available
         """
         match_current_visited_regex = r'\],[\w\sÄÖÜäöüß]+?,\[\d{1,3},\d{1,3}\]\]'
         raw_current_day: list = re.findall(match_current_visited_regex, html)  # get token from html
         if len(raw_current_day) == 0:
-            return self.week.get_day(self.weekday).get_hour(self.time_index)
+            raise Exception('live data not found')
 
         raw_current_day: str = raw_current_day[0]
         extracted_data = re.findall(r'\d+', raw_current_day)  # extract usable data

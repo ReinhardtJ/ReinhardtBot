@@ -8,8 +8,8 @@ class HourModel:
     def __str__(self):
         if self.is_closed:
             return f'{str(self.time)} Uhr, geschlossen'
-        else:
-            return f'{str(self.time)} Uhr, {str(self.visited)} voll'
+
+        return f'{str(self.time)} Uhr, {str(self.visited)} voll'
 
 
 class DayModel:

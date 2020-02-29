@@ -1,8 +1,13 @@
 import logging
 import os
+import sys
+
 import telegram as tg
 import telegram.ext as tg_ext
+
 from bot.dialogs import visited_dialog
+from bot.gmaps import user_location_mapping, gmaps_location
+from bot.spoiler import spoiler
 
 
 class BotController:
@@ -17,29 +22,28 @@ class BotController:
             bot_token = os.environ['BOT_TOKEN']
         except:
             self.logger.error('Bot token environment variable not set, exiting...')
-            exit()
+            sys.exit()
 
         self.configure_command_handlers(bot_token)
 
     def location(self, update: tg.Update, context: tg_ext.CallbackContext):
         self.logger.info('"locations" called')
 
-        from bot.gmaps.gmaps_location import GmapsLocation
-        all_locations = str(GmapsLocation.location_names_as_list)
+        all_locations = str(gmaps_location.GmapsLocation.location_names_as_list)
         context.bot.send_message(chat_id=update.effective_chat.id, text=all_locations)
 
     def set_location(self, update: tg.Update, context: tg_ext.CallbackContext):
         args = context.args
         self.logger.info(f'"setlocation" called - trying to handle args: {args}')
 
-        from bot.gmaps.user_location_mapping import UserLocationMapper
-        mapper = UserLocationMapper()
+        mapper = user_location_mapping.UserLocationMapper()
         user_id = str(update.effective_user.id)
 
         response = mapper.set_user(user_id, args)
         context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
     def howfull(self, update: tg.Update, context: tg_ext.CallbackContext):
+
         # command template: wievoll [weekday time location]
         args = context.args
         self.logger.info(f'"wievoll" called - trying to handle args: {args}')
@@ -51,6 +55,7 @@ class BotController:
         context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
     def howfull_now(self, update: tg.Update, context: tg_ext.CallbackContext):
+
         args = context.args
         self.logger.info(f'"wievoll jetzt" called - trying to handle args: {args}')
 
@@ -60,10 +65,20 @@ class BotController:
         self.logger.info('sending response...')
         context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
+    def spoiler_inline_query(self, update: tg.Update, context: tg_ext.CallbackContext):
+        """Handle the inline query."""
+        handler = spoiler.TextSpoilerHandler()
+        handler.handle_inline_spoiler(update, context)
+
+    def spoiler_callback(self, update: tg.Update, context: tg_ext.CallbackContext):
+        update.callback_query.answer(update.callback_query.data, show_alert=True)
+
+
     def configure_command_handlers(self, bot_token: str):
         tg_updater = tg_ext.Updater(token=bot_token, use_context=True)
         dispatcher = tg_updater.dispatcher
 
+        # gmaps
         location_handler = tg_ext.CommandHandler('locations', self.location)
         setlocation_handler = tg.ext.CommandHandler('setlocation', self.set_location)
         howfull_handler = tg_ext.CommandHandler('wievoll', self.howfull)
@@ -72,4 +87,12 @@ class BotController:
         dispatcher.add_handler(setlocation_handler)
         dispatcher.add_handler(howfull_handler)
         dispatcher.add_handler(howfull_now_handler)
+
+        # spoiler
+        spoiler_inline_query_handler = tg_ext.InlineQueryHandler(self.spoiler_inline_query)
+        spoiler_callback_handler = tg_ext.CallbackQueryHandler(self.spoiler_callback)
+        dispatcher.add_handler(spoiler_callback_handler)
+        dispatcher.add_handler(spoiler_inline_query_handler)
+
+        dispatcher.add_error_handler(lambda update, context: self.logger.warning(context.error))
         tg_updater.start_polling()
