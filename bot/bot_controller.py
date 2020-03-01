@@ -1,12 +1,13 @@
 import logging
-import os
 import sys
+import os
 
 import telegram as tg
 import telegram.ext as tg_ext
 
 from bot import commands
-from bot.spoiler import spoiler
+from bot.inline import inline
+from bot.inline.spoiler import spoiler
 
 
 class BotController:
@@ -23,14 +24,13 @@ class BotController:
             self.logger.error('Bot token environment variable not set, exiting...')
             sys.exit()
 
-        self.configure_command_handlers(bot_token)
-
-
-
-    def configure_command_handlers(self, bot_token: str):
         tg_updater = tg_ext.Updater(token=bot_token, use_context=True)
         dispatcher = tg_updater.dispatcher
+        self.configure_command_handlers(dispatcher)
+        tg_updater.start_polling()
 
+
+    def configure_command_handlers(self, dispatcher: tg_ext.Dispatcher):
         # general
         help_handler = tg_ext.CommandHandler('help', commands.help)
         dispatcher.add_handler(help_handler)
@@ -48,12 +48,9 @@ class BotController:
         howfull_now_handler = tg_ext.CommandHandler('wievolljetzt', commands.howfull_now)
         dispatcher.add_handler(howfull_now_handler)
 
-        # spoiler
-        spoiler_inline_query_handler = tg_ext.InlineQueryHandler(spoiler.handle_inline_spoiler)
-        dispatcher.add_handler(spoiler_inline_query_handler)
+        # inline
+        inline_query_handler = tg_ext.InlineQueryHandler(inline.handle_inline_query)
+        dispatcher.add_handler(inline_query_handler)
 
-        spoiler_callback_handler = tg_ext.CallbackQueryHandler(spoiler.handle_spoiler_callback)
-        dispatcher.add_handler(spoiler_callback_handler)
-
-        dispatcher.add_error_handler(lambda update, context: self.logger.warning(context.error))
-        tg_updater.start_polling()
+        callback_handler = tg_ext.CallbackQueryHandler(inline.handle_inline_callback)
+        dispatcher.add_handler(callback_handler)

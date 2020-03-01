@@ -34,7 +34,9 @@ Zeigt an, wie voll es am <code>WOCHENTAG</code> um <code>UHRZEIT</code> am Ort <
 Zeigt an, wie voll es jetzt gerade am Ort <code>LOCATION</code> ist. Wenn per <code>/setlocation</code> ein Ort gesetzt wurde, ist der Parameter optional
     
 <b>Inline Commands</b>
-<code>spoiler</code> - Versteckt die dahinterstehende Nachricht (maximal 256 Zeichen)"""
+<code>spoiler</code> - Versteckt die dahinterstehende Nachricht (maximal 256 Zeichen)
+
+<code>gif</code> - Sucht eine Reihe von gifs"""
 
     context.bot.send_message(chat_id=update.effective_chat.id, text=help_msg, parse_mode=ParseMode.HTML)
 
