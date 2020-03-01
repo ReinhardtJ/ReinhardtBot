@@ -23,6 +23,6 @@ def handle_inline_query(update: tg.Update, context: tg_ext.CallbackContext):
 
 def handle_inline_callback(update: tg.Update, context: tg_ext.CallbackContext):
     callback_query = update.callback_query
-    if callback_query.startswith('spoiler '):
+    if callback_query == 'spoiler':
         logger.info('Handling spoiler callback')
         update.callback_query.answer(update.callback_query.data, show_alert=True)

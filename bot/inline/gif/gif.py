@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import uuid
 import requests
 
 import telegram as tg
@@ -16,10 +15,11 @@ def get_gif_list(gifs_dict: dict) -> list:
     gif_list = []
     results = gifs_dict['results']
     for gif in results:
-        nanogif = gif['media'][0]['nanogif']
-        gif_model = tg.InlineQueryResultGif(id=uuid.uuid4(),
-                                            gif_url=gif['url'],
-                                            thumb_url=nanogif['preview'],
+        nanowebm = gif['media'][0]['nanowebm']
+        truegif = gif['media'][0]['gif']
+        gif_model = tg.InlineQueryResultGif(id=gif['id'],
+                                            gif_url=truegif['url'],
+                                            thumb_url=nanowebm['preview'],
                                             parse_mode=tg.ParseMode.HTML)
         gif_list.append(gif_model)
 
@@ -41,7 +41,7 @@ def handle_inline_gif(update: tg.Update, context: tg_ext.CallbackContext):
         query_answer = get_gif_list(gifs_dict)
 
         logger.info(f'displaying {len(query_answer)} gifs')
-        update.inline_query.answer(results=query_answer, cache_time=30)
+        update.inline_query.answer(results=query_answer, cache_time=0)
     else:
         logger.warning(f"couldn't retrieve results, http response code {response.status_code}")
         update.inline_query.answer(results=[])
