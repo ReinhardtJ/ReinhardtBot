@@ -15,9 +15,10 @@ def handle_inline_query(update: tg.Update, context: tg_ext.CallbackContext):
     if query.startswith('spoiler '):
         logger.info('Query starts with "spoiler ", handling inline spoiler..')
         spoiler.handle_inline_spoiler(update, context)
-    if query.startswith('gif '):
+    elif query.startswith('gif '):
         gif.handle_inline_gif(update, context)
     else:
+        logger.info('Query doesnt start with anything, removing response..')
         update.inline_query.answer(results=[])
 
 
