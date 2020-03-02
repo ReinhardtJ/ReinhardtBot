@@ -17,7 +17,7 @@ def handle_inline_spoiler(update: tg.Update, context: tg_ext.CallbackContext):
             reply_markup=tg.InlineKeyboardMarkup(
                 inline_keyboard=[[tg.InlineKeyboardButton(
                     text='Show',
-                    callback_data='spoiler')]])
+                    callback_data=query)]])
         )
     ]
     update.inline_query.answer(results=results)
