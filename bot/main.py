@@ -2,16 +2,14 @@ import os
 from bot import bot_controller
 
 
-def check_and_create_persistent_data():
-    user_location_mapping_path = '../persistent_data/user_location_mapping.json'
-    if not os.path.isfile(user_location_mapping_path):
-        with open(user_location_mapping_path, "a+") as f:
-            f.write('{}')
+# check and create persistent data file if it doesnt exist
+user_location_mapping_path = '../persistent_data'
+filename = 'user_location_mapping.json'
+user_location_mapping_filepath = os.path.join(user_location_mapping_path, filename)
+if not os.path.isdir(user_location_mapping_path):
+    os.mkdir(user_location_mapping_path, mode=0o777)
+if not os.path.isfile(user_location_mapping_filepath):
+    with open(user_location_mapping_filepath, "a+") as f:
+        f.write('{}')
 
-
-def main():
-    check_and_create_persistent_data()
-    bot_controller.BotController()
-
-
-main()
+bot_controller.start()

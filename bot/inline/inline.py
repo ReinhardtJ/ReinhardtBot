@@ -1,11 +1,12 @@
 import logging
-import uuid
+import re
 
 import telegram as tg
 import telegram.ext as tg_ext
+from telegram import CallbackQuery
 
-import bot.inline.spoiler.spoiler as spoiler
 import bot.inline.gif.gif as gif
+import bot.inline.spoiler.spoiler as spoiler
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +24,16 @@ def handle_inline_query(update: tg.Update, context: tg_ext.CallbackContext):
 
 
 def handle_inline_callback(update: tg.Update, context: tg_ext.CallbackContext):
-    callback_data = update.callback_query.data
+    query: CallbackQuery = update.callback_query
+    callback_data = query.data
+
+    # check if callback_data matches a popularity callback id and forwards it to the popularity callback handler
+    if (re.match(pattern='location_[0-9]{1,2}', string=callback_data) or
+            re.match(pattern='day_[0-9]{1,2}', string=callback_data) or
+            re.match(pattern='time_[0-9]{1,2}', string=callback_data)):
+        from bot.dialogs.popularity_dialog import handle_callback
+        handle_callback(update, context, query)
+
     if callback_data.startswith('spoiler '):
         logger.info('Handling spoiler callback')
         spoiler_text = callback_data[len('spoiler '):]

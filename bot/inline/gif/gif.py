@@ -1,15 +1,16 @@
 import json
 import logging
-import os
-import requests
 
+import requests
 import telegram as tg
 import telegram.ext as tg_ext
+
+from bot.api_tokens import get_tenor_token
 
 logger = logging.getLogger(__name__)
 
 # set the apikey and limit
-apikey = os.environ['TENOR_API_KEY']
+apikey = get_tenor_token()
 
 def get_gif_list(gifs_dict: dict) -> list:
     gif_list = []
