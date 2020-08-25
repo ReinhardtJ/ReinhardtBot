@@ -111,7 +111,7 @@ def finish_popularity_dialog(update: Update, context: CallbackContext, query: Ca
         send_response(query, e.message)
         return
 
-    from bot.populartimes.populartimes import get_populartimes
+    from bot.gmaps.populartimes import get_populartimes
     popularity_json = get_populartimes(gmaps_token, gmaps_id)
 
     # acquire day index
