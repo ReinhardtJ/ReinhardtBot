@@ -5,9 +5,9 @@ WORKDIR /usr/src
 RUN git clone https://github.com/ReinhardtJ/ReinhardtBot.git
 WORKDIR ReinhardtBot
 ENV PYTHONPATH /usr/src/ReinhardtBot
-RUN mkdir persistent_data \
-    git submodule init \
-    git submodule update
+RUN mkdir persistent_data
+RUN git submodule init 
+RUN git submodule update
 VOLUME /usr/src/ReinhardtBot/persistent_data
 WORKDIR bot
 CMD python3 main.py
