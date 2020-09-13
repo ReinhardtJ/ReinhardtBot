@@ -1,5 +1,4 @@
 help - Hilfe anzeigen
-locations - Alle Orte
 wievoll - Wie voll ist es zu einer bestimmten Zeit?
 wievolljetzt - Wie voll ist es jetzt gerade?
 setlocation - Setzt deinen persönlichen Standort

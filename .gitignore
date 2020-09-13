@@ -133,7 +133,7 @@ dmypy.json
 
 # Testing files
 bot/testing.py
-bot/gmaps/maps_data.txt
+bot/popular_locations/maps_data.txt
 
 # Persistent files, those will be added during runtime when the bot starts for the first time
 /persistent_data
